@@ -5,7 +5,7 @@ import imageminJpegtran from 'imagemin-jpegtran';
 import imagemin, {gifsicle, optipng, svgo} from 'gulp-imagemin';
 
 const methodCompiller = 'sass'; // Меняем Scss на Sass в зависимости от нужд
-const srcFolder = './app';
+const srcFolder = './src';
 const paths = {
     srcScss: `${srcFolder}/${methodCompiller}/style.${methodCompiller}`, 
 };
@@ -41,7 +41,7 @@ global.app = {
 function browsersync() {
   browserSync.init({
     server : {
-      baseDir: 'app/'
+      baseDir: 'src/'
     },
 	 browser: "c:\\Program Files\\Firefox Developer Edition\\firefox.exe",
   });
@@ -80,18 +80,18 @@ function clean() {
 function resources(){
   return gulp.src(
     [
-      'app/css/style.min.css', 
-      'app/css/style.min.css.map', 
-      'app/js/main.min.js', 
-      'app/js/main.min.js.map', 
-      'app/fonts', 
-      'app/ht.access'], { encoding: false })
+      'src/css/style.min.css', 
+      'src/css/style.min.css.map', 
+      'src/js/main.min.js', 
+      'src/js/main.min.js.map', 
+      'src/fonts', 
+      'src/ht.access'], { encoding: false })
     .pipe(gulp.dest('dist/'))
 }
 
 
 function images() {
-  return gulp.src('app/images/**/*')
+  return gulp.src('src/images/**/*')
     .pipe(imagemin(
       [
         gifsicle({ interlaced: true }),
@@ -110,7 +110,7 @@ function images() {
 
 
 export const favicon = () => {
-     return gulp.src('app/favicon.png', { encoding: false })
+     return gulp.src('src/favicon.png', { encoding: false })
         .pipe(faviconImg({
             icons: {
                 appleIcon: true,
@@ -124,7 +124,7 @@ export const favicon = () => {
                 coast: false
             }
         }))
-        .pipe(gulp.dest('app/favicon/'))
+        .pipe(gulp.dest('src/favicon/'))
         .pipe(debug({
             "title": "Favicons"
         }));
@@ -135,7 +135,7 @@ export const favicon = () => {
 export const scripts = () => {
   return gulp.src([
     'node_modules/jquery/dist/jquery.js',
-    'app/js/main.js'
+    'src/js/main.js'
   ])
     .pipe(plumber(
       notify.onError({
@@ -170,12 +170,12 @@ export const scripts = () => {
       console.error('WEBPACK ERROR', err);
       this.emit('end');
     })
-    .pipe(gulp.dest('app/js'))
+    .pipe(gulp.dest('src/js'))
     .pipe(browserSync.stream());
 }
 
 export const htmlMinify = () => {
-  return gulp.src('app/**/*.html')
+  return gulp.src('src/**/*.html')
     .pipe(htmlmin({
       collapseWhitespace: true
     }))
@@ -200,20 +200,20 @@ export const styles = () => {
 	.pipe(gcmq())
 //	.pipe(cssmin())
 	.pipe(rename({suffix: '.min'}))
-    .pipe(gulp.dest(['app/css'], { sourcemaps: '.' }))
+    .pipe(gulp.dest(['src/css'], { sourcemaps: '.' }))
     .pipe(browserSync.stream());
 };
 
 function watching() {
   gulp.watch(`${paths.srcScss}`, styles).on('change', browserSync.reload);
-  gulp.watch(['app/js/main.js'], scripts).on('change', browserSync.reload);
-  gulp.watch(['app/*.html']).on('change', browserSync.reload);
-  gulp.watch(['app/favicon/*.{ico,png}']).on('change', browserSync.reload);
-  gulp.watch(['app/images/*.{jpg,png,svg,jpeg}']).on('change', browserSync.reload);
+  gulp.watch(['src/js/main.js'], scripts).on('change', browserSync.reload);
+  gulp.watch(['src/*.html']).on('change', browserSync.reload);
+  gulp.watch(['src/favicon/*.{ico,png}']).on('change', browserSync.reload);
+  gulp.watch(['src/images/*.{jpg,png,svg,jpeg}']).on('change', browserSync.reload);
 }
 
 /*
-export const imgBuild = await imageminJpj(['app/images/*.{jpg,png}'], {
+export const imgBuild = await imageminJpj(['src/images/*.{jpg,png}'], {
 	destination: 'dist/images',
 	plugins: [
 		imageminJpegtran()
